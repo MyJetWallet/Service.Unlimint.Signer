@@ -44,16 +44,7 @@ namespace Service.Unlimint.Signer
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcSchema<CircleEncryptionKeyService, ICircleEncryptionKeyService>();
-                endpoints.MapGrpcSchema<CircleCardsService, ICircleCardsService>();
-                endpoints.MapGrpcSchema<CircleBankAccountsService, ICircleBankAccountsService>();
                 endpoints.MapGrpcSchema<UnlimintPaymentsService, IUnlimintPaymentsService>();
-                endpoints.MapGrpcSchema<CirclePayoutsService, ICirclePayoutsService>();
-                endpoints.MapGrpcSchema<CircleDepositAddressService, ICircleDepositAddressService>();
-                //endpoints.MapGrpcSchema<CircleTransfersService, ICircleTransfersService>();
-                endpoints.MapGrpcSchema<CircleBusinessAccountService, ICircleBusinessAccountService>();
-                endpoints.MapGrpcSchema<CircleChargebacksService, ICircleChargebacksService>();
-
                 endpoints.MapGrpcSchemaRegistry();
 
                 //security

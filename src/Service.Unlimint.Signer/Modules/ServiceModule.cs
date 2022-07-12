@@ -1,11 +1,8 @@
 ﻿using Autofac;
 using MyJetWallet.ApiSecurityManager.Autofac;
 using MyJetWallet.Circle;
-using MyJetWallet.Circle.Settings.Ioc;
 using MyJetWallet.Sdk.NoSql;
-using MyJetWallet.Sdk.Service;
 using Service.PersonalData.Client;
-using Service.Unlimint.Signer.Jobs;
 using Service.Unlimint.Signer.Services;
 
 namespace Service.Unlimint.Signer.Modules
@@ -14,22 +11,10 @@ namespace Service.Unlimint.Signer.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            var myNoSqlClient = builder.CreateNoSqlClient(Program.Settings.MyNoSqlReaderHostPort, Program.LogFactory,
-                ApplicationEnvironment.HostName ??
-                $"{ApplicationEnvironment.AppName}:{ApplicationEnvironment.AppVersion}");
-
-            builder
-                .RegisterType<UpdateEncryptionKeysJob>()
-                .AsSelf()
-                .SingleInstance();
-
-            builder
-                .RegisterType<SetSourceWalletIdJob>()
-                .AsSelf()
-                .SingleInstance();
+            var myNoSqlClient = builder.CreateNoSqlClient(Program.Settings.MyNoSqlReaderHostPort, 
+                Program.LogFactory);
 
             builder.RegisterPersonalDataClient(Program.Settings.PersonalDataGrpcServiceUrl);
-            builder.RegisterCircleSettingsReader(myNoSqlClient);
             builder.RegisterEncryptionServiceClient();
             builder.RegisterType<RsaKeyStorage>().AsSelf().SingleInstance();
 

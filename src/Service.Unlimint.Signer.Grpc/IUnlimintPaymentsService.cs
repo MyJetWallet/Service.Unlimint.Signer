@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 using System.Threading.Tasks;
-using MyJetWallet.Circle.Models.Payments;
+using MyJetWallet.Unlimint.Models.Payments;
 using Service.Unlimint.Signer.Grpc.Models;
 
 namespace Service.Unlimint.Signer.Grpc

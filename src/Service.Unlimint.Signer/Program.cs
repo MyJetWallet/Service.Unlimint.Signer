@@ -36,7 +36,7 @@ namespace Service.Unlimint.Signer
 
             Settings = SettingsReader.GetSettings<SettingsModel>(SettingsFileName);
 
-            Console.WriteLine($"UnlimintNetwork: {Settings.CircleNetwork}");
+            Console.WriteLine($"UnlimintNetwork: {Settings.UnlimintNetwork}");
 
             using var loggerFactory =
                 LogConfigurator.ConfigureElk_v2("MyJetWallet", Settings.SeqServiceUrl, Settings.ElkLogs);

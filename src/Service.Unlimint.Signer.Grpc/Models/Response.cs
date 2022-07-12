@@ -8,7 +8,6 @@ namespace Service.Unlimint.Signer.Grpc.Models
         [DataMember(Order = 1)] public T Data { get; set; }
         [DataMember(Order = 2)] public string ErrorMessage { get; set; }
         [DataMember(Order = 3)] public bool IsSuccess { get; set; }
-
         [DataMember(Order = 4)] public int StatusCode { get; set; }
 
         public static Response<T> Success(T data)

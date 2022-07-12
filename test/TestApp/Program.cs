@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MyJetWallet.ApiSecurityManager.Autofac;
 using ProtoBuf.Grpc.Client;
 using Service.Unlimint.Signer.Client;
 
@@ -19,20 +18,10 @@ namespace TestApp
             //var url = "http://localhost:80";
             //var url = "http://circle-signer.spot-services.svc.cluster.local:80";
             var url = "http://localhost:5001";
-            var fac = new CircleBankAccountsClientFactory(url);// "http://circle-signer.spot-services.svc.cluster.local:80");//"http://localhost:5001");
-            var client = fac.GetCircleBankAccountsService();
+            var fac = new UnlimintPaymentsClientFactory(url);// "http://circle-signer.spot-services.svc.cluster.local:80");//"http://localhost:5001");
+            var client = fac.GetCirclePaymentsService();
 
-            var securityFactory = new ApiSecurityManagerClientFactory(url);
-            //securityFactory.ToJson();
-            var apiKeyService = securityFactory.GetApiKeyService();
 
-            await apiKeyService.SetApiKeysAsync(new MyJetWallet.ApiSecurityManager.Grpc.Models.SetApiKeyRequest()
-            {
-                ApiKey = Environment.GetEnvironmentVariable("CircleAccessToken"),
-                ApiKeyId = "circle-api-key-id",
-                EncryptionKeyId = "encryption-key-id",
-                PrivateKey = "",
-            });
             //var paymentFac = new CirclePaymentsClientFactory(url);
 
             //var client = paymentFac.GetCirclePaymentsService();

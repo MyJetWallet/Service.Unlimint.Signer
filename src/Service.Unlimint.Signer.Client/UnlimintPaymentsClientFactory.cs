@@ -11,18 +11,18 @@ using Service.Unlimint.Signer.Grpc;
 namespace Service.Unlimint.Signer.Client
 {
     [UsedImplicitly]
-    public class CircleDepositAddressClientFactory : MyGrpcClientFactory
+    public class UnlimintPaymentsClientFactory : MyGrpcClientFactory
     {
         private readonly CallInvoker _channel;
 
-        public CircleDepositAddressClientFactory(string grpcServiceUrl) : base(grpcServiceUrl)
+        public UnlimintPaymentsClientFactory(string grpcServiceUrl) : base(grpcServiceUrl)
         {
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             var channel = GrpcChannel.ForAddress(grpcServiceUrl);
             _channel = channel.Intercept(new PrometheusMetricsInterceptor());
         }
 
-        public ICircleDepositAddressService GetCircleDepositAddressService() =>
-            _channel.CreateGrpcService<ICircleDepositAddressService>();
+        public IUnlimintPaymentsService GetCirclePaymentsService() =>
+            _channel.CreateGrpcService<IUnlimintPaymentsService>();
     }
 }

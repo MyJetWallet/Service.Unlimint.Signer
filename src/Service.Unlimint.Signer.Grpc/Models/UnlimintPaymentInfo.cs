@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
-using MyJetWallet.Circle.Models.Payments;
+using MyJetWallet.Unlimint.Models.Payments;
+
 
 namespace Service.Unlimint.Signer.Grpc.Models
 {
