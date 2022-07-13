@@ -13,10 +13,8 @@ namespace Service.Unlimint.Signer.Grpc.Models
         [DataMember(Order = 6)] public string IpAddress { get; set; }
         [DataMember(Order = 7)] public decimal Amount { get; set; }
         [DataMember(Order = 8)] public string Currency { get; set; }
-        [DataMember(Order = 9)] public string Verification { get; set; }
-        [DataMember(Order = 10)] public string SourceId { get; set; }
-        [DataMember(Order = 11)] public string SourceType { get; set; }
-        [DataMember(Order = 12)] public string Description { get; set; }
-        [DataMember(Order = 13)] public string EncryptedData { get; set; }
+        [DataMember(Order = 9)] public bool GenerateToken { get; set; }
+        [DataMember(Order = 10)] public string ThreeDsChallengeIndicator { get; set; }
+        [DataMember(Order = 11)] public string Description { get; set; }
     }
 }
