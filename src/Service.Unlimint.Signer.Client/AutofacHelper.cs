@@ -7,11 +7,11 @@ namespace Service.Unlimint.Signer.Client
 {
     public static class AutofacHelper
     {
-        public static void RegisterCirclePaymentsClient(this ContainerBuilder builder, string grpcServiceUrl)
+        public static void RegisterUnlimintPaymentsClient(this ContainerBuilder builder, string grpcServiceUrl)
         {
             var factory = new UnlimintPaymentsClientFactory(grpcServiceUrl);
 
-            builder.RegisterInstance(factory.GetCirclePaymentsService()).As<IUnlimintPaymentsService>()
+            builder.RegisterInstance(factory.GetUnlimintPaymentsService()).As<IUnlimintPaymentsService>()
                 .SingleInstance();
         }
     }

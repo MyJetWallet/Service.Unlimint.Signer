@@ -22,7 +22,7 @@ namespace Service.Unlimint.Signer.Client
             _channel = channel.Intercept(new PrometheusMetricsInterceptor());
         }
 
-        public IUnlimintPaymentsService GetCirclePaymentsService() =>
+        public IUnlimintPaymentsService GetUnlimintPaymentsService() =>
             _channel.CreateGrpcService<IUnlimintPaymentsService>();
     }
 }

@@ -19,7 +19,7 @@ namespace TestApp
             //var url = "http://circle-signer.spot-services.svc.cluster.local:80";
             var url = "http://localhost:5001";
             var fac = new UnlimintPaymentsClientFactory(url);// "http://circle-signer.spot-services.svc.cluster.local:80");//"http://localhost:5001");
-            var client = fac.GetCirclePaymentsService();
+            var client = fac.GetUnlimintPaymentsService();
 
 
             //var paymentFac = new CirclePaymentsClientFactory(url);
