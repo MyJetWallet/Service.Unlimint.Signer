@@ -2,10 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MyJetWallet.ApiSecurityManager.ApiKeys;
 using MyJetWallet.Sdk.Service;
 using MyJetWallet.Unlimint;
-using MyJetWallet.Unlimint.Models.Payments;
+using MyJetWallet.Unlimint.Models;
 using Service.PersonalData.Grpc;
 using Service.PersonalData.Grpc.Contracts;
 using Service.Unlimint.Signer.Grpc;
@@ -17,38 +16,34 @@ namespace Service.Unlimint.Signer.Services
 {
     public class UnlimintPaymentsService : IUnlimintPaymentsService
     {
-        private readonly UnlimintClient _unlimitClient;
+        private readonly UnlimintClient _unlimintClient;
+        private readonly UnlimintAuthClient _unlimintAuthClient;
+
         private readonly ILogger<UnlimintPaymentsService> _logger;
         private readonly IPersonalDataServiceGrpc _personalDataServiceGrpc;
-        private readonly IApiKeyStorage _apiKeyStorage;
 
         public UnlimintPaymentsService(
             ILogger<UnlimintPaymentsService> logger,
-            IPersonalDataServiceGrpc personalDataServiceGrpc,
-            IApiKeyStorage apiKeyStorage
-        )
+            IPersonalDataServiceGrpc personalDataServiceGrpc)
         {
             _logger = logger;
             _personalDataServiceGrpc = personalDataServiceGrpc;
-            _apiKeyStorage = apiKeyStorage;
-            _unlimitClient = new UnlimintClient(null, Program.Settings.UnlimintNetwork);
+            _unlimintAuthClient =  new UnlimintAuthClient(
+                Program.Settings.UnlimintTerminalCode, 
+                Program.Settings.UnlimintPassword, 
+                Program.Settings.UnlimintNetwork);
+            _unlimintClient = new UnlimintClient(null, 
+                Program.Settings.UnlimintNetwork);
         }
 
-        public async Task<Response<UnlimintPaymentInfo>> AddUnlimintPayment(AddPaymentRequest request)
+        public async Task<Response<CreatePaymentInfo>> CreateUnlimintPayment(CreatePaymentRequest request)
         {
-            using var action = MyTelemetry.StartActivity("Create Circle payment");
+            using var action = MyTelemetry.StartActivity("Create Unlimint payment");
             try
             {
-                // var apiKey = _apiKeyStorage.Get(Program.Settings.ApiKeyId);
-                // if (string.IsNullOrEmpty(apiKey?.ApiKeyValue))
-                // {
-                //     _logger.LogError("Api key is not configured for broker {brokerId}",
-                //         request.BrokerId);
-                //     return Response<UnlimintPaymentInfo>.Error("Api key is not configured");
-                // }
-
-                //_unlimitClient.SetAccessToken(apiKey.ApiKeyValue);
-
+                var token = await _unlimintAuthClient.GetAuthorizationTokenAsync();
+                _unlimintClient.SetAccessToken(token.Data.AccessToken);
+                
                 var personalData = await _personalDataServiceGrpc.GetByIdAsync(new GetByIdRequest
                 {
                     Id = request.ClientId
@@ -58,15 +53,10 @@ namespace Service.Unlimint.Signer.Services
                 {
                     _logger.LogError("Unable to get personal data for client {clientId}",
                         request.ClientId);
-                    return Response<UnlimintPaymentInfo>.Error("Unable to get personal data for client");
+                    return Response<CreatePaymentInfo>.Error("Unable to get personal data for client");
                 }
 
-                //_logger.LogInformation("UNLIMINT PAYMENT: {context}", (new 
-                //{
-                //    request = request
-                //}).ToJson());
-
-                var response = await _unlimitClient
+                var response = await _unlimintClient
                     .CreatePaymentAsync(
                         request.MerchantId,
                         request.PaymentId,
@@ -84,6 +74,7 @@ namespace Service.Unlimint.Signer.Services
                         Program.Settings.Success3dUrl,
                         Program.Settings.Failure3dUrl,
                         DateTime.UtcNow,
+                        request.ClientId,
                         "BANKCARD"
                     );
 
@@ -91,81 +82,80 @@ namespace Service.Unlimint.Signer.Services
                     request.ToJson(), response.ToJson());
 
                 return !response.Success
-                    ? Response<UnlimintPaymentInfo>.Error(response.Message)
-                    : Response<UnlimintPaymentInfo>.Success(new UnlimintPaymentInfo
+                    ? Response<CreatePaymentInfo>.Error(response.Message)
+                    : Response<CreatePaymentInfo>.Success(new CreatePaymentInfo
                     {
                         Id = response.Data.PaymentData.Id,
                         // TODO: Add status response.Data.Status,
-                        Status = PaymentStatus.Pending, 
+                        //Status = PaymentStatus.New, 
                         // TODO: Add TrackingRef response.Data.TrackingRef
-                        TrackingRef = String.Empty,//response.Data.TrackingRef,
+                        //TrackingRef = String.Empty,//response.Data.TrackingRef,
                         // TODO: Add ErrorCode response.Data.TrackingRef
-                        ErrorCode = null,//response.Data.PaymentData.,
+                        //ErrorCode = null,//response.Data.PaymentData.,
                         RedirectUrl = response.Data.RedirectUrl
                     });
             }
             catch (Exception ex)
             {
                 ex.FailActivity();
-                return Response<UnlimintPaymentInfo>.Error(ex.Message);
+                return Response<CreatePaymentInfo>.Error(ex.Message);
             }
         }
 
-        public async Task<Response<PaymentInfo>> GetUnlimintPaymentInfo(GetPaymentRequest request)
+        public async Task<Response<GetPaymentInfo>> GetUnlimintPaymentInfo(GetPaymentRequest request)
         {
-            using var action = MyTelemetry.StartActivity("Get Circle payment");
+            using var action = MyTelemetry.StartActivity("Get Unlimint payment");
             request.AddToActivityAsJsonTag("request");
             try
             {
-                // var apiKey = _apiKeyStorage.Get(Program.Settings.ApiKeyId);
-                // if (string.IsNullOrEmpty(apiKey?.ApiKeyValue))
-                // {
-                //     _logger.LogError("Api key is not configured for broker {brokerId}",
-                //         request.BrokerId);
-                //     return Response<PaymentInfo>.Error("Api key is not configured");
-                // }
-                //
-                // _unlimitClient.SetAccessToken(apiKey.ApiKeyValue);
+                var token = await _unlimintAuthClient.GetAuthorizationTokenAsync();
+                _unlimintClient.SetAccessToken(token.Data.AccessToken);
 
-                var response = await _unlimitClient
+                var response = await _unlimintClient
                     .GetPaymentAsync(request.PaymentId);
 
                 if (!response.Success)
                 {
-                    _logger.LogError("Error depositing from circle card {context}",
+                    _logger.LogError("Error depositing from unlimint card {context}",
                         (new
                         {
                             request = request,
                             response = response,
                         }).ToJson());
-                    return Response<PaymentInfo>.Error(response.Message);
+                    return Response<GetPaymentInfo>.Error(response.Message);
                 }
 
                 //TODO: Ask Unliminit - why we receive a lot of payments
                 var payment = response.Data.Payments.FirstOrDefault();
-                return Response<PaymentInfo>.Success(new PaymentInfo
+                var data = new GetPaymentInfo();
+                
+                data.Id = payment?.PaymentData.Id;
+                data.Type = null;
+                data.MerchantId = payment?.MerchantOrder.Id;
+                data.MerchantWalletId = payment?.PaymentData.Currency;
+                data.Description = payment?.PaymentData.Note;
+                data.Status = payment?.PaymentData.Status; // Captured = false,
+                // CaptureDate = null,
+                data.TrackingRef = payment?.PaymentData.Rrn;
+                data.ErrorCode = payment?.PaymentData.DeclineCode;
+                data.Metadata = new Metadata()
                 {
-                    Id = payment?.PaymentData.Id,
-                    Type = null,
-                    MerchantId = payment?.MerchantOrder.Id,
-                    MerchantWalletId = payment?.PaymentData.Currency,
-                    Description =null,
-                    Status = PaymentStatus.Pending,
-                    Captured = false,
-                    CaptureDate = null,
-                    TrackingRef = null,
-                    ErrorCode = null, //payment?.PaymentData.DeclineCode,
-                    Metadata = null,
-                    RiskEvaluation = null,
-                    CreateDate = payment?.PaymentData.Created,
-                    UpdateDate = null,
-                    TransactionHash = null,
-                    RequiredAction = null
-                });
+                    Email = payment?.Customer.Email,
+                    PhoneNumber = payment?.Customer.Phone,
+                    SessionId = payment?.Customer.FullName,
+                    IpAddress = payment?.Customer.Ip,
+                };
+                // data.RiskEvaluation = new RiskEvaluation
+                // {
+                // };
+                data.CreateDate = payment?.PaymentData.Created;
+                // data.TransactionHash = null;
+                // data.RequiredAction = null;
+                return Response<GetPaymentInfo>.Success(data);
             }
             catch (Exception exception)
             {
-                return Response<PaymentInfo>.Error(exception.Message);
+                return Response<GetPaymentInfo>.Error(exception.Message);
             }
         }
     }

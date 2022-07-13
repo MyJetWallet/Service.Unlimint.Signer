@@ -9,9 +9,9 @@ namespace Service.Unlimint.Signer.Grpc
     public interface IUnlimintPaymentsService
     {
         [OperationContract]
-        Task<Response<UnlimintPaymentInfo>> AddUnlimintPayment(AddPaymentRequest request);
+        Task<Response<CreatePaymentInfo>> CreateUnlimintPayment(CreatePaymentRequest request);
 
         [OperationContract]
-        Task<Response<PaymentInfo>> GetUnlimintPaymentInfo(GetPaymentRequest request);
+        Task<Response<GetPaymentInfo>> GetUnlimintPaymentInfo(GetPaymentRequest request);
     }
 }

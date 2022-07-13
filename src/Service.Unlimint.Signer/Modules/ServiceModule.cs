@@ -16,7 +16,7 @@ namespace Service.Unlimint.Signer.Modules
 
             builder.RegisterPersonalDataClient(Program.Settings.PersonalDataGrpcServiceUrl);
             builder.RegisterEncryptionServiceClient();
-            builder.RegisterType<RsaKeyStorage>().AsSelf().SingleInstance();
+
 
             CircleClient.PrintPostApiCalls = true;
             CircleClient.PrintPutApiCalls = true;

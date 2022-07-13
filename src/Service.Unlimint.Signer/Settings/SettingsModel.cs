@@ -28,5 +28,11 @@ namespace Service.Unlimint.Signer.Settings
 
         [YamlProperty("UnlimintSigner.UnlimintNetwork")]
         public UnlimintNetwork UnlimintNetwork { get; set; }
+        
+        [YamlProperty("UnlimintSigner.UnlimintTerminalCode")]
+        public string UnlimintTerminalCode { get; set; }
+        
+        [YamlProperty("UnlimintSigner.UnlimintPassword")]
+        public string UnlimintPassword { get; set; }
     }
 }

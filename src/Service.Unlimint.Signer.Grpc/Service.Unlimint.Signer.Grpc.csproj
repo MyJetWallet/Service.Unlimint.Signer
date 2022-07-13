@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MyJetWallet.Circle" Version="1.11.9" />
-    <PackageReference Include="MyJetWallet.Unlimint" Version="2.0.1" />
+    <PackageReference Include="MyJetWallet.Unlimint" Version="2.0.3" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
   </ItemGroup>
 
