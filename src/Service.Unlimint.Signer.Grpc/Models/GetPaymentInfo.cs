@@ -26,14 +26,17 @@ namespace Service.Unlimint.Signer.Grpc.Models
         [DataMember(Order = 8)]
         public PaymentStatus? Status { get; set; }
 
-        // [DataMember(Order = 9)]
-        // public bool Captured { get; set; }
-        //
+        [DataMember(Order = 9)]
+        public UnlimintAmount Amount { get; set; }
+        
+        [DataMember(Order = 10)]
+        public UnlimintAmount Fee { get; set; }
+        
+        [DataMember(Order = 11)]
+        public CardDescription Card { get; set; }
+        
         // [DataMember(Order = 11)]
         // public string CaptureDate { get; set; }
-
-        // [JsonProperty("fees"), DataMember(Order = 12)]
-        // public CircleAmount Fees { get; set; }
 
         [DataMember(Order = 13)]
         public string TrackingRef { get; set; }

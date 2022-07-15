@@ -130,9 +130,28 @@ namespace Service.Unlimint.Signer.Services
                 data.Id = payment?.PaymentData.Id;
                 data.Type = payment?.PaymentMethod;
                 data.MerchantId = payment?.MerchantOrder.Id;
+                data.Card = new CardDescription
+                {
+                    AcctType = payment?.CardAccount.AcctType,
+                    Expiration = payment?.CardAccount.Expiration,
+                    Holder = payment?.CardAccount.Holder,
+                    IssuingCountryCode = payment?.CardAccount.IssuingCountryCode,
+                    MaskedPan = payment?.CardAccount.MaskedPan,
+                    Token = payment?.CardAccount.Token,
+                };
                 data.MerchantWalletId = payment?.PaymentData.Currency;
                 data.Description = payment?.PaymentData.Note;
-                data.Status = payment?.PaymentData.Status; 
+                data.Status = payment?.PaymentData.Status;
+                data.Amount = new UnlimintAmount
+                {
+                    Amount = payment?.PaymentData.Amount ?? 0m,
+                    Currency = payment?.PaymentData.Currency,
+                };
+                data.Fee = new UnlimintAmount
+                {
+                    Amount = 0m,
+                    Currency = payment?.PaymentData.Currency,
+                };
                 // Captured = false,
                 // CaptureDate = null,
                 data.TrackingRef = payment?.PaymentData.Rrn;
