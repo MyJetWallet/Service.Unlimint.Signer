@@ -147,11 +147,11 @@ namespace Service.Unlimint.Signer.Services
                     Amount = payment?.PaymentData.Amount ?? 0m,
                     Currency = payment?.PaymentData.Currency,
                 };
-                data.Fee = new UnlimintAmount
-                {
-                    Amount = 0m,
-                    Currency = payment?.PaymentData.Currency,
-                };
+                // data.Fee = new UnlimintAmount
+                // {
+                //     Amount = 0m,
+                //     Currency = payment?.PaymentData.Currency,
+                // };
                 data.TrackingRef = payment?.PaymentData.Rrn;
                 data.ErrorCode = payment?.PaymentData.DeclineCode;
                 data.Metadata = new Metadata()
@@ -217,11 +217,11 @@ namespace Service.Unlimint.Signer.Services
                     Amount = payment?.PaymentData.Amount ?? 0m,
                     Currency = payment?.PaymentData.Currency,
                 };
-                data.Fee = new UnlimintAmount
-                {
-                    Amount = 0m,
-                    Currency = payment?.PaymentData.Currency,
-                };
+                // data.Fee = new UnlimintAmount
+                // {
+                //     Amount = 0m,
+                //     Currency = payment?.PaymentData.Currency,
+                // };
                 data.TrackingRef = payment?.PaymentData.Rrn;
                 data.ErrorCode = payment?.PaymentData.DeclineCode;
                 data.Metadata = new Metadata()
