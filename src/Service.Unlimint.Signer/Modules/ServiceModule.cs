@@ -15,7 +15,7 @@ namespace Service.Unlimint.Signer.Modules
                 Program.LogFactory);
 
             builder.RegisterPersonalDataClient(Program.Settings.PersonalDataGrpcServiceUrl);
-            builder.RegisterEncryptionServiceClient();
+            //builder.RegisterEncryptionServiceClient();
 
 
             UnlimintClient.PrintPostApiCalls = true;

@@ -74,8 +74,8 @@ namespace Service.Unlimint.Signer.Services
                         Program.Settings.Success3dUrl,
                         Program.Settings.Failure3dUrl,
                         DateTime.UtcNow,
-                        request.ClientId,
-                        "BANKCARD"
+                        "BANKCARD",
+                        request.ClientId
                     );
 
                 _logger.LogInformation("Execute CreatePaymentAsync: Request: {requestJson}; Response: {responseJson}",
@@ -85,7 +85,7 @@ namespace Service.Unlimint.Signer.Services
                     ? Response<CreatePaymentInfo>.Error(response.Message)
                     : Response<CreatePaymentInfo>.Success(new CreatePaymentInfo
                     {
-                        Id = response.Data.PaymentData.Id,
+                        Id = response.Data?.PaymentData?.Id,
                         // TODO: Add status response.Data.Status,
                         //Status = PaymentStatus.New, 
                         // TODO: Add TrackingRef response.Data.TrackingRef
