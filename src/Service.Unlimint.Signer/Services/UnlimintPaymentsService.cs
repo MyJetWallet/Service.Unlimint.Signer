@@ -29,11 +29,11 @@ namespace Service.Unlimint.Signer.Services
         {
             _logger = logger;
             _personalDataServiceGrpc = personalDataServiceGrpc;
-            _unlimintAuthClient =  new UnlimintAuthClient(
-                Program.Settings.UnlimintTerminalCode, 
-                Program.Settings.UnlimintPassword, 
+            _unlimintAuthClient = new UnlimintAuthClient(
+                Program.Settings.UnlimintTerminalCode,
+                Program.Settings.UnlimintPassword,
                 Program.Settings.UnlimintNetwork);
-            _unlimintClient = new UnlimintClient(null, 
+            _unlimintClient = new UnlimintClient(null,
                 Program.Settings.UnlimintNetwork);
         }
 
@@ -44,7 +44,7 @@ namespace Service.Unlimint.Signer.Services
             {
                 var token = await _unlimintAuthClient.GetAuthorizationTokenAsync();
                 _unlimintClient.SetAccessToken(token.Data.AccessToken);
-                
+
                 var personalData = await _personalDataServiceGrpc.GetByIdAsync(new GetByIdRequest
                 {
                     Id = request.ClientId
@@ -102,24 +102,24 @@ namespace Service.Unlimint.Signer.Services
             }
         }
 
-        public async Task<Response<GetPaymentInfo>> GetUnlimintPaymentByIdAsync(GetPaymentByIdRequest byIdRequest)
+        public async Task<Response<GetPaymentInfo>> GetUnlimintPaymentByIdAsync(GetPaymentByIdRequest request)
         {
             using var action = MyTelemetry.StartActivity("Get Unlimint payment");
-            byIdRequest.AddToActivityAsJsonTag("byIdRequest");
+            request.AddToActivityAsJsonTag("get-unlimint-payment-by-id");
             try
             {
                 var token = await _unlimintAuthClient.GetAuthorizationTokenAsync();
                 _unlimintClient.SetAccessToken(token.Data.AccessToken);
 
                 var response = await _unlimintClient
-                    .GetPaymentByIdAsync(byIdRequest.PaymentId);
+                    .GetPaymentByIdAsync(request.PaymentId);
 
                 if (!response.Success)
                 {
                     _logger.LogError("Error depositing from unlimint card {context}",
                         (new
                         {
-                            request = byIdRequest,
+                            request = request,
                             response = response,
                         }).ToJson());
                     return Response<GetPaymentInfo>.Error(response.Message);
@@ -152,8 +152,6 @@ namespace Service.Unlimint.Signer.Services
                     Amount = 0m,
                     Currency = payment?.PaymentData.Currency,
                 };
-                // Captured = false,
-                // CaptureDate = null,
                 data.TrackingRef = payment?.PaymentData.Rrn;
                 data.ErrorCode = payment?.PaymentData.DeclineCode;
                 data.Metadata = new Metadata()
@@ -163,12 +161,7 @@ namespace Service.Unlimint.Signer.Services
                     SessionId = payment?.Customer.FullName,
                     IpAddress = payment?.Customer.Ip,
                 };
-                // data.RiskEvaluation = new RiskEvaluation
-                // {
-                // };
                 data.CreateDate = payment?.PaymentData.Created;
-                // data.TransactionHash = null;
-                // data.RequiredAction = null;
                 return Response<GetPaymentInfo>.Success(data);
             }
             catch (Exception exception)
@@ -177,39 +170,58 @@ namespace Service.Unlimint.Signer.Services
             }
         }
 
-        public async Task<Response<GetPaymentInfo>> GetUnlimintPaymentByMerchantIdAsync(GetPaymentByMerchantIdRequest byIdRequest)
+        public async Task<Response<GetPaymentInfo>> GetUnlimintPaymentByMerchantIdAsync(
+            GetPaymentByMerchantIdRequest request)
         {
             using var action = MyTelemetry.StartActivity("Get Unlimint payment");
-            byIdRequest.AddToActivityAsJsonTag("byIdRequest");
+            request.AddToActivityAsJsonTag("get-unlimint-payment-by-merchant-id");
             try
             {
                 var token = await _unlimintAuthClient.GetAuthorizationTokenAsync();
                 _unlimintClient.SetAccessToken(token.Data.AccessToken);
 
                 var response = await _unlimintClient
-                    .GetPaymentByIdAsync(byIdRequest.MerchantId);
+                    .GetPaymentByMerchantOrderIdAsync(request.MerchantId, request.MatchingEngineId);
 
                 if (!response.Success)
                 {
                     _logger.LogError("Error depositing from unlimint card {context}",
                         (new
                         {
-                            request = byIdRequest,
+                            request = request,
                             response = response,
                         }).ToJson());
                     return Response<GetPaymentInfo>.Error(response.Message);
                 }
 
-                var payment = response.Data;
-                var data = new GetPaymentInfo();
+                var payment = response.Data.Payments.FirstOrDefault();
                 
+                var data = new GetPaymentInfo();
                 data.Id = payment?.PaymentData.Id;
                 data.Type = payment?.PaymentMethod;
                 data.MerchantId = payment?.MerchantOrder.Id;
+                data.Card = new CardDescription
+                {
+                    AcctType = payment?.CardAccount.AcctType,
+                    Expiration = payment?.CardAccount.Expiration,
+                    Holder = payment?.CardAccount.Holder,
+                    IssuingCountryCode = payment?.CardAccount.IssuingCountryCode,
+                    MaskedPan = payment?.CardAccount.MaskedPan,
+                    Token = payment?.CardAccount.Token,
+                };
                 data.MerchantWalletId = payment?.PaymentData.Currency;
                 data.Description = payment?.PaymentData.Note;
-                data.Status = payment?.PaymentData.Status; // Captured = false,
-                // CaptureDate = null,
+                data.Status = payment?.PaymentData.Status;
+                data.Amount = new UnlimintAmount
+                {
+                    Amount = payment?.PaymentData.Amount ?? 0m,
+                    Currency = payment?.PaymentData.Currency,
+                };
+                data.Fee = new UnlimintAmount
+                {
+                    Amount = 0m,
+                    Currency = payment?.PaymentData.Currency,
+                };
                 data.TrackingRef = payment?.PaymentData.Rrn;
                 data.ErrorCode = payment?.PaymentData.DeclineCode;
                 data.Metadata = new Metadata()
@@ -219,12 +231,7 @@ namespace Service.Unlimint.Signer.Services
                     SessionId = payment?.Customer.FullName,
                     IpAddress = payment?.Customer.Ip,
                 };
-                // data.RiskEvaluation = new RiskEvaluation
-                // {
-                // };
                 data.CreateDate = payment?.PaymentData.Created;
-                // data.TransactionHash = null;
-                // data.RequiredAction = null;
                 return Response<GetPaymentInfo>.Success(data);
             }
             catch (Exception exception)

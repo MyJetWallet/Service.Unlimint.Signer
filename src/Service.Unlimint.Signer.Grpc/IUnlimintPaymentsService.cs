@@ -15,6 +15,6 @@ namespace Service.Unlimint.Signer.Grpc
         Task<Response<GetPaymentInfo>> GetUnlimintPaymentByIdAsync(GetPaymentByIdRequest byIdRequest);
         
         [OperationContract]
-        Task<Response<GetPaymentInfo>> GetUnlimintPaymentByMerchantIdAsync(GetPaymentByMerchantIdRequest byIdRequest);
+        Task<Response<GetPaymentInfo>> GetUnlimintPaymentByMerchantIdAsync(GetPaymentByMerchantIdRequest request);
     }
 }
