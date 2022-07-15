@@ -18,7 +18,7 @@
         <PackageReference Include="MyJetWallet.Sdk.NoSql" Version="2.2.7" />
         <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.2.4" />
         <PackageReference Include="MyJetWallet.Service.PersonalData.Client" Version="1.2.3" />
-        <PackageReference Include="MyJetWallet.Unlimint" Version="2.0.5" />
+        <PackageReference Include="MyJetWallet.Unlimint" Version="2.0.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
         <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />

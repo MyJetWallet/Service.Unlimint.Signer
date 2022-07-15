@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using MyJetWallet.ApiSecurityManager.Autofac;
-using MyJetWallet.Circle;
+using MyJetWallet.Unlimint;
 using MyJetWallet.Sdk.NoSql;
 using Service.PersonalData.Client;
 using Service.Unlimint.Signer.Services;
@@ -18,8 +18,8 @@ namespace Service.Unlimint.Signer.Modules
             builder.RegisterEncryptionServiceClient();
 
 
-            CircleClient.PrintPostApiCalls = true;
-            CircleClient.PrintPutApiCalls = true;
+            UnlimintClient.PrintPostApiCalls = true;
+            UnlimintClient.PrintPutApiCalls = true;
         }
     }
 }
