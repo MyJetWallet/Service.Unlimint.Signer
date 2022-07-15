@@ -92,7 +92,7 @@ namespace Service.Unlimint.Signer.Services
                         //TrackingRef = String.Empty,//response.Data.TrackingRef,
                         // TODO: Add ErrorCode response.Data.TrackingRef
                         //ErrorCode = null,//response.Data.PaymentData.,
-                        RedirectUrl = response.Data.RedirectUrl
+                        RedirectUrl = response.Data?.RedirectUrl
                     });
             }
             catch (Exception ex)
