@@ -34,5 +34,14 @@ namespace Service.Unlimint.Signer.Settings
         
         [YamlProperty("UnlimintSigner.UnlimintPassword")]
         public string UnlimintPassword { get; set; }
+
+        [YamlProperty("UnlimintSigner.Cancel3dUrl")]
+        public string Cancel3dUrl { get; set; }
+
+        [YamlProperty("UnlimintSigner.InProcess3dUrl")]
+        public string InProcess3dUrl { get; set; }
+
+        [YamlProperty("UnlimintSigner.Return3dUrl")]
+        public string Return3dUrl { get; set; }
     }
 }

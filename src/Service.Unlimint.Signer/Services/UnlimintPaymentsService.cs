@@ -73,6 +73,9 @@ namespace Service.Unlimint.Signer.Services
                         request.Description,
                         Program.Settings.Success3dUrl,
                         Program.Settings.Failure3dUrl,
+                        Program.Settings.Cancel3dUrl,
+                        Program.Settings.InProcess3dUrl,
+                        Program.Settings.Return3dUrl,
                         DateTime.UtcNow,
                         "BANKCARD",
                         request.ClientId
