@@ -15,7 +15,7 @@ namespace Service.Unlimint.Signer.Grpc.Models
         public string Type { get; set; }
 
         [DataMember(Order = 3)]
-        public string MerchantId { get; set; }
+        public string MerchantOrderId { get; set; }
 
         [DataMember(Order = 4)]
         public string MerchantWalletId { get; set; }

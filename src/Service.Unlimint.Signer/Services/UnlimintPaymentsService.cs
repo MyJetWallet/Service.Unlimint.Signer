@@ -59,7 +59,7 @@ namespace Service.Unlimint.Signer.Services
 
                 var response = await _unlimintClient
                     .CreatePaymentAsync(
-                        request.MerchantId,
+                        request.MerchantOrderId,
                         request.PaymentId,
                         personalData.PersonalData.Email,
                         string.IsNullOrEmpty(personalData.PersonalData.Phone) ? null : personalData.PersonalData.Phone,
@@ -132,7 +132,7 @@ namespace Service.Unlimint.Signer.Services
                 var data = new GetPaymentInfo();
                 data.Id = payment?.PaymentData.Id;
                 data.Type = payment?.PaymentMethod;
-                data.MerchantId = payment?.MerchantOrder.Id;
+                data.MerchantOrderId = payment?.MerchantOrder.Id;
                 data.Card = new CardDescription
                 {
                     AcctType = payment?.CardAccount.AcctType,
@@ -202,7 +202,7 @@ namespace Service.Unlimint.Signer.Services
                 var data = new GetPaymentInfo();
                 data.Id = payment?.PaymentData.Id;
                 data.Type = payment?.PaymentMethod;
-                data.MerchantId = payment?.MerchantOrder.Id;
+                data.MerchantOrderId = payment?.MerchantOrder.Id;
                 data.Card = new CardDescription
                 {
                     AcctType = payment?.CardAccount.AcctType,

@@ -7,7 +7,7 @@ namespace Service.Unlimint.Signer.Grpc.Models
     {
         [DataMember(Order = 1)] public string BrokerId { get; set; }
         [DataMember(Order = 2)] public string ClientId { get; set; }
-        [DataMember(Order = 3)] public string MerchantId { get; set; }
+        [DataMember(Order = 3)] public string MerchantOrderId { get; set; }
         [DataMember(Order = 4)] public string PaymentId { get; set; }
         [DataMember(Order = 5)] public string SessionId { get; set; }
         [DataMember(Order = 6)] public string IpAddress { get; set; }
