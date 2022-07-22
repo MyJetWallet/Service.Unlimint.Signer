@@ -43,5 +43,8 @@ namespace Service.Unlimint.Signer.Settings
 
         [YamlProperty("UnlimintSigner.Return3dUrl")]
         public string Return3dUrl { get; set; }
+
+        [YamlProperty("UnlimintSigner.PrintPostApiCalls")]
+        public bool PrintPostApiCalls { get; set; }
     }
 }
